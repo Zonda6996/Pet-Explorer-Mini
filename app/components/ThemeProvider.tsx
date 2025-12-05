@@ -1,12 +1,20 @@
 'use client'
 
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { useAppSelector } from '@/hooks/hooks'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
 	const theme = useAppSelector(state => state.ui.theme)
 
-	const themeClass = useMemo(() => (theme === 'dark' ? 'dark' : ''), [theme])
+	useEffect(() => {
+		const htmlElement = document.documentElement
 
-	return <div className={themeClass}>{children}</div>
+		if (theme === 'dark') {
+			htmlElement.classList.add('dark')
+		} else {
+			htmlElement.classList.remove('dark')
+		}
+	}, [theme])
+
+	return <>{children}</>
 }
