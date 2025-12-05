@@ -17,20 +17,24 @@ export const Header = () => {
 						className='font-semibold hover:underline hover:opacity-85'
 						href='/'
 					>
-						Home
+						Главная
 					</Link>
 					<Link
 						className='font-semibold hover:underline hover:opacity-85'
 						href='/animals'
 					>
-						Animals
+						Животные
 					</Link>
 				</div>
 				<div className='flex flex-col items-center space-y-1.5'>
-					<Button onClick={() => dispatch(toggleTheme())}>Toggle Theme</Button>
+					<Button onClick={() => dispatch(toggleTheme())}>
+						Переключить тему
+					</Button>
 					<p className='mb-4 font-medium text-lg'>
-						Theme:{' '}
-						<span className='capitalize font-light text-sm'>{theme}</span>
+						Тема:{' '}
+						<span className='capitalize font-light text-sm'>
+							{theme === 'dark' ? 'Тёмная' : 'Светлая'}
+						</span>
 					</p>
 				</div>
 			</div>
