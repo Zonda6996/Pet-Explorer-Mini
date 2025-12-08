@@ -1,22 +1,31 @@
 'use client'
 
 import AnimalForm from '@/modules/animals/components/AnimalForm'
-import { mockAnimals } from '@/modules/animals/model/mockAnimals'
+import { Animal } from '@/modules/animals/types/Animal'
 import { Button } from '@/ui/button'
+import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 
 export default function AnimalPage() {
-	const params = useParams()
-	const animal = mockAnimals.find(a => a.id === params.id)
-	console.log(params)
+	const { id } = useParams()
 
-	if (!animal)
-		return (
-			<div className='text-center font-bold text-3xl'>
-				Животное не найдено...
-			</div>
-		)
+	const {
+		data: animal,
+		isLoading,
+		isError,
+		refetch,
+	} = useQuery({
+		queryKey: ['animal', id],
+		queryFn: async (): Promise<Animal> => {
+			const res = await fetch(`http://localhost:3000/api/animals/${id}`)
+			if (!res.ok) throw new Error('Животное не найдено')
+			return res.json()
+		},
+	})
+
+	if (isLoading) return <p>Загрузка...</p>
+	if (isError || !animal) return <p>Животное не найдено</p>
 
 	return (
 		<div>
@@ -37,11 +46,12 @@ export default function AnimalPage() {
 				/>
 				<h1 className='text-3xl font-bold'>{animal.name}</h1>
 				<p className='mt-2'>{animal.description}</p>
-				<Button onClick={() => window.location.reload()} className='mt-6'>
-					Обновить страницу
+				<Button onClick={() => refetch()} className='mt-6'>
+					Перезагрузить данные животного
 				</Button>
 			</div>
 			<AnimalForm />
 		</div>
 	)
 }
+
